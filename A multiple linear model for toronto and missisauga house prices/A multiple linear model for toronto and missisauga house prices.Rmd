@@ -1,0 +1,120 @@
+---
+title: "A Multiple Linear Model for Toronto and Mississauga House Prices"
+author: "Ziqian Qiu ID1004723383"
+date: "December 3rd, 2020"
+output: html_document
+---
+
+## I. Data Wrangling
+```{r}
+set.seed(1004723383)
+x <- seq(from=0.1, to=20, by=0.1)
+error<-rchisq(200, 100)
+y <- 500 + 0.4*(x-10)^3 + error
+loesfit <- loess(y~x,span=0.7)
+a <- predict(lm(y~x), data.frame(x=12))
+b <- predict(loesfit,data.frame(x=12))
+a-b
+```
+
+```{r echo=FALSE}
+#load all data
+original_data_AQ3383 = read.csv("real203.csv", stringsAsFactors=T)
+```
+a). I use set.seed(1004723383) to set my seed of your randomization and select a sample of 150 cases. All 150 ids for my chosen sample is shown below
+```{r}
+set.seed(1004723383)
+data_AQ3383 = original_data_AQ3383[sample(nrow(original_data_AQ3383), 150), ]
+id_AQ3383 = data_AQ3383[, 1]
+id_AQ3383
+```
+
+```{r}
+lotsize=data_AQ3383$lotwidth*data_AQ3383$lotlength
+data_AQ3383 = cbind(data_AQ3383, lotsize)
+data_AQ3383 <- data_AQ3383[,-9]
+data_AQ3383 <- data_AQ3383[,-9]
+```
+b). I create a new variable with the name ‘lotsize’ by lotwidth * lotlength, and add it back into our data frame.
+
+```{r echo=FALSE}
+summary(data_AQ3383)
+df_AQ3383 <- data_AQ3383[!is.na(data_AQ3383$lotsize) & !is.na(data_AQ3383$parking) & !is.na(data_AQ3383$taxes),]
+df_AQ3383 <- df_AQ3383[,-7]
+# clean data by removing lotlength and lotwidth since we use lotsize instead of them
+
+```
+
+c). According to summary shown above, we can tell there are 8 NAs in parking column, 2 NAs in lotsize and 85 NAs in maxsqfoot. Since we are allowed to remove a maximize of 11 cases, I removed all 8 cases which are NA for parking and 2 cases which are NA for lotsize. I also removed predictor "maxsqfoot". This is because its meaning is very similar to lotwidth, and it has too many NAs, therefore it's not the best to remove all cases since that's almost half of the total, but simply take the column out of our data frame.
+After finishing cleaning data, we have 140 cases left. 
+
+## II. Exploratory Data Analysis
+a). Categorical: location
+
+Discrete: bedrooms, bathrooms, parking 
+
+Continuous: sale, list, taxes, lotsize
+
+```{r echo=FALSE}
+numericx= cbind(df_AQ3383$list, df_AQ3383$bedroom, df_AQ3383$bathroom, df_AQ3383$parking, df_AQ3383$taxes, df_AQ3383$lotsize)
+round(cor(numericx), 4)
+```
+
+```{r}
+pairs(sale~list+bedroom+bathroom+parking+taxes+lotsize, data = df_AQ3383, main="scatterplot matrix AQ3383")
+numericxy=cbind(df_AQ3383$sale,numericx)
+round(cor(numericxy), 4)
+```
+
+b). pairwise correlations and scatterplot matrix for all pairs of quantitative variables in the data are shown above. The rank of each quantitative predictor for sale price in terms their correlation coefficient, from highest to lowest is list(0.9885) > taxes(0.7713) > bathroom(0.6015) > bedroom(0.4607) > lotsize(0.3784) > parking(0.1623)
+
+```{r}
+model_violated = lm(df_AQ3383$sale~df_AQ3383$bedroom)
+plot(model_violated, which=3)
+```
+
+c). Based on scatterplot matrix, bedroom of sale price would strongly violate the assumption of constant variance. The graph shown above is a SLR of sale price and number of bedrooms. 
+
+## III. Methods and Model
+```{r}
+model_AQ3383 = lm(df_AQ3383$sale~df_AQ3383$list+df_AQ3383$bedroom+df_AQ3383$bathroom+df_AQ3383$parking+df_AQ3383$taxes+df_AQ3383$location+df_AQ3383$lotsize)
+summary(model_AQ3383)
+```
+
+i) above is additive linear regression model with all available predictors variables for sale price. According to graph shown above, list price and taxes has significant t-test results. This shows:
+Holding all other explanatory variables in the model fixed, for every $1 increase in the
+list price, on average sale price increases by 84 cents. Holding all other explanatory variables in the model fixed, for every $1 increase in taxes, on average sale price increases by $20.4. 
+
+```{r}
+AIC_model_AQ3383 = step(model_AQ3383, direction = "backward")
+AIC_model_AQ3383
+```
+
+ii) As shown above, by using AIC, and the final model is sale = 99050 + 0.8554list + 20.48taxes - 0.1195parking + 70810locationT. List and taxes are consistent as part i). However, parking and location are additional predictors that are also discovered by using backward elimination of AIC.
+
+```{r}
+BIC_model_AQ3383 = step(model_AQ3383, direction = "backward", k=log(150))
+BIC_model_AQ3383
+```
+
+iii) As shown above, by using AIC, and the final model is sale = 50450 + 0.8490list + 19.70taxes + 114800locationT. List and taxes are consistent as part i) and ii). However, compared to part i), which is using backward elimination by AIC, parking is no longer highlighted by using backward elimination of BIC. 
+
+## IV. Discussions and Limitations
+
+Part 4 (.)
+```{r }
+par(mfrow=c(2,2))
+plot(BIC_model_AQ3383, main = "                                              AQ3383")
+```
+
+a) Four diagnostic plots that are obtained in R by plotting the model obtained in part III iii) is shown above.
+
+```{r echo=FALSE}
+cooks<-cooks.distance(model_AQ3383)
+round(sort(cooks, decreasing=TRUE)[1:12], 4)
+```
+b) Residuals vs Fitted: the residuals are equally distributed above and under the horizontal line. This indicated we have a linear relationship. Case 45 and 61 seems a little bit off, but we don't know what it is yet, so we'll keep that in mind. Normal Q-Q: We can tell the residuals almost follow a straight line and barely deviate, but case 45 and 61 still concerns us. Note that we don't have a heavy tale here, which is good. Scale-Location: a horizontal line shows majority of the residuals is spread equally along the range of predictors. This also shows we have homoscedasticity. As shown above in the previous graphs, case 45 is more irregular than case 61 here. Residuals vs Leverage:  This is where we defines influential points, which are cases outside the dashed line called "cook's distance". According to code shown above, cases with cooks distance does not have a significant effect in the model. Therefore, we can concluded that neither case 45 nor case 61 are influential points, and according to four graphs above, we can safely say the model satisfies normality assumptions, constant variance and linearity. 
+
+c). In order to find a valid final model, I would probably fix the problem for "maxsqfoot", which is the predictor we eliminated from the beginning since most of cases is missing its value. I would also add a few more predictors, for example, history rent prices. This makes sense because when purchasing a property as an investment, it's sale price is always dependents on how much it can rent. If possible, using anova to calculate the F-tests is also a valid way to highlight the predictors of the model. 
+
+
