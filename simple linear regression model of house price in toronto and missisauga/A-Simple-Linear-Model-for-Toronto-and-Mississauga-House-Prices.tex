@@ -1,0 +1,346 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={A Simple Linear Model for Toronto and Mississauga House Prices},
+  pdfauthor={AQ3383},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{A Simple Linear Model for Toronto and Mississauga House Prices}
+\author{AQ3383}
+\date{October 20, 2020}
+
+\begin{document}
+\maketitle
+
+\hypertarget{i.-exploratory-data-analysis}{%
+\subsection{I. Exploratory Data
+Analysis}\label{i.-exploratory-data-analysis}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{3383}\NormalTok{)}
+\NormalTok{data_AQ3383 =}\StringTok{ }\NormalTok{original_data_AQ3383[}\KeywordTok{sample}\NormalTok{(}\KeywordTok{nrow}\NormalTok{(original_data_AQ3383), }\DecValTok{200}\NormalTok{), ]}
+\end{Highlighting}
+\end{Shaded}
+
+Part 1 The boxplot with no unusual points removed is shown below.
+\includegraphics{A-Simple-Linear-Model-for-Toronto-and-Mississauga-House-Prices_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+I use this plot because we can easily see if any points are outliers
+from graph plotted. In our case, the outlier is the maximum value.
+Therefore when creating a subset of what we currently have, I remove
+this particular point.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#find the ID of the outlier}
+\NormalTok{data_AQ3383[}\KeywordTok{which.max}\NormalTok{(data_AQ3383}\OperatorTok{$}\NormalTok{list),]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      ID  sold  list taxes location
+## 112 112 1.085 84.99  4457        T
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#remove the outlier}
+\NormalTok{df_AQ3383 <-}\StringTok{ }\NormalTok{data_AQ3383[data_AQ3383}\OperatorTok{$}\NormalTok{ID }\OperatorTok{!=}\StringTok{ }\DecValTok{112}\NormalTok{,]}
+\end{Highlighting}
+\end{Shaded}
+
+Then we use data frame df\_AQ3383 for the rest of the assignment.
+\includegraphics{A-Simple-Linear-Model-for-Toronto-and-Mississauga-House-Prices_files/figure-latex/unnamed-chunk-5-1.pdf}
+\includegraphics{A-Simple-Linear-Model-for-Toronto-and-Mississauga-House-Prices_files/figure-latex/unnamed-chunk-5-2.pdf}
+
+Interpretation: Both graphs above shows a somehow linear relationship
+between, therefore we can use linear regression for both graphs. Sold
+price vs list price has a more significant linear relationship than sold
+price vs tax price. Heteroscedasticity occurs in sold price vs tax price
+graph. In the boxplot with all data of listing price included, there
+exists a significant outlier, which is about 85 million CAD. This might
+be a error occurred when measuring data.
+
+\hypertarget{ii.-methods-and-model}{%
+\subsection{II. Methods and Model}\label{ii.-methods-and-model}}
+
+Three simple linear regressions (SLR) for sale price from list price and
+its corresponding graph shown below:
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = dfy_AQ3383 ~ dfx1_AQ3383)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.9821 -0.1073 -0.0242  0.1184  0.7429 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  0.35438    0.05900   6.006 9.01e-09 ***
+## dfx1_AQ3383  0.77949    0.02795  27.887  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.4173 on 197 degrees of freedom
+## Multiple R-squared:  0.7979, Adjusted R-squared:  0.7969 
+## F-statistic: 777.7 on 1 and 197 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = dfy_M_AQ3383 ~ dfx_M_AQ3383)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.45148 -0.04358 -0.01940  0.05841  0.41395 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   0.13901    0.02145   6.481 5.48e-09 ***
+## dfx_M_AQ3383  0.89045    0.01188  74.941  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.1031 on 86 degrees of freedom
+## Multiple R-squared:  0.9849, Adjusted R-squared:  0.9847 
+## F-statistic:  5616 on 1 and 86 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = dfy_T_AQ3383 ~ dfx_T_AQ3383)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.6577 -0.1544 -0.0038  0.1853  0.7889 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   0.54309    0.10714   5.069 1.65e-06 ***
+## dfx_T_AQ3383  0.70401    0.04609  15.276  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.5367 on 109 degrees of freedom
+## Multiple R-squared:  0.6816, Adjusted R-squared:  0.6787 
+## F-statistic: 233.4 on 1 and 109 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Table:
+
+\begin{longtable}[]{@{}lcccccc@{}}
+\toprule
+\begin{minipage}[b]{0.10\columnwidth}\raggedright
+Regression\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+\(R^2\)\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+estimated intercept \(\beta_0\)\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+estimated slope \(\beta_1\)\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+estimate of the variance of the error\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+p-value for \(H_0: \beta_1=0\)\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+95\% CI for \(\beta_1\)\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.10\columnwidth}\raggedright
+All\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.7979\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.3544\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.7795\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.1741\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+p-value: \textless{} 2.2e-16\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+(0.7244, 0.8346)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.10\columnwidth}\raggedright
+Mississauga Neighborhood\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.9849\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.1390\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.8905\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.0106\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+p-value: \textless{} 2.2e-16\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+(0.8668, 0.9141)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.10\columnwidth}\raggedright
+Toronto Neighborhood\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.6816\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.5431\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.7040\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.2880\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+p-value: \textless{} 2.2e-16\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+(0.6127, 0.7954)\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Interpret and compare: We see the difference between \(R^2\) is quite
+different. Mississauga neighborhood has a 0.98 \(R^2\), which is the
+highest among all. However Toronto Neighborhood has a 0.68 \(R^2\). As a
+result, \(R^2\) based on all data is 0.80, which is in between other two
+sets of data. This shows us it is necessary to evaluate two
+neighborhoods respectively. This is normal because the distance between
+data and fitted regression line for all neighborhoods is usually not as
+well as how data fits the two neighborhoods respectively, since the list
+and sold price are often more similar in one neighborhoods.
+
+A pooled two-sample t-test is not the best to be used when determine if
+there is a statistically significant difference between the slopes of
+the simple linear models for the two neighborhoods. Since we are dealing
+with housing price in two different cities, therefore it is reasonable
+to assume the two sets of data are independent. However, according to
+data shown above, they do not have the same variance. Therefore we
+should not use pooled two-sample t-test here.
+
+\hypertarget{iii.-discussions-and-limitations}{%
+\subsection{III. Discussions and
+Limitations}\label{iii.-discussions-and-limitations}}
+
+\includegraphics{A-Simple-Linear-Model-for-Toronto-and-Mississauga-House-Prices_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+According to data summary shown above, I picked Mississauga neighborhood
+to do the following evaluation. This is because it has a \(R^2\) of
+0.9849, which means it has the highest portion of explained response
+variable variation by this model.
+
+Violations: According to fitted vs residual graph, we can tell there are
+a few irregulars. The graph is mostly linear, which is good. There are
+also a few outliers in Normal Q-Q plot. However thee residuals follow a
+mostly straight line, which concluded there are not much violations,
+except for a few outliers.
+
+Possible predictors to to fit a multiple linear regression for sale
+price could be size of the house, and how old this house is. These are
+factors directly related and can cause effect to the sale price
+
+\end{document}

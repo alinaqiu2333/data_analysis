@@ -1,0 +1,95 @@
+---
+title: "A Simple Linear Model for Toronto and Mississauga House Prices"
+author: "AQ3383"
+date: "October 20, 2020"
+output: html_document
+--- 
+
+## I. Exploratory Data Analysis
+```{r echo=FALSE}
+#load all data
+original_data_AQ3383 = read.csv("real20.csv", stringsAsFactors=T)
+#set the seed and using sample() to pick 200 data points out of 230
+```
+
+```{r}
+set.seed(3383)
+data_AQ3383 = original_data_AQ3383[sample(nrow(original_data_AQ3383), 200), ]
+```
+
+Part 1 
+The boxplot with no unusual points removed is shown below.
+```{r echo=FALSE}
+boxplot(data_AQ3383$list, horizontal=T, xlab="Property List Price in $1,000,000 CAD", main= "boxplotAQ3383 of all property List Price ")
+```
+
+I use this plot because we can easily see if any points are outliers from graph plotted. In our case, the outlier is the maximum value. Therefore when creating a subset of what we currently have, I remove this particular point. 
+```{r}
+#find the ID of the outlier
+data_AQ3383[which.max(data_AQ3383$list),]
+#remove the outlier
+df_AQ3383 <- data_AQ3383[data_AQ3383$ID != 112,]
+```
+
+Then we use data frame df_AQ3383 for the rest of the assignment.
+```{r echo=FALSE}
+dfy_AQ3383 = df_AQ3383$sold
+dfx1_AQ3383 = df_AQ3383$list
+dfx2_AQ3383 = df_AQ3383$taxes
+plot(dfx1_AQ3383, dfy_AQ3383, xlab="List price in $1,000,000 CAD", ylab="Sold Price in $1,000,000 CAD", main ="ScatterplotAQ3383 of Sold price vs List price",pch=19, col= c("red", "blue"))
+legend("topleft", legend=c('T', "M"), fill = c("red", "blue"))
+plot(dfx2_AQ3383, dfy_AQ3383, xlab="Tax price in CAD", ylab= "Sold Price in $1,000,000 CAD", main ="ScatterplotAQ3383 of Sold price vs tax price",pch=19, col = c("green", "brown"))
+legend("topleft", legend=c('T', "M"), fill = c("green", "brown"))
+```
+
+Interpretation: Both graphs above shows a somehow linear relationship between, therefore we can use linear regression for both graphs. Sold price vs list price has a more significant linear relationship than sold price vs tax price. Heteroscedasticity occurs in sold price vs tax price graph. In the boxplot with all data of listing price included, there exists a significant outlier, which is about 85 million CAD. This might be a error occurred when measuring data. 
+
+## II. Methods and Model
+
+Three simple linear regressions (SLR) for sale price from list price and its corresponding graph shown below:
+```{r echo=FALSE}
+#all data
+model_all_AQ3383=lm(dfy_AQ3383~dfx1_AQ3383)
+summary(model_all_AQ3383)
+#neighborhood M 
+df_M_AQ3383 = df_AQ3383[df_AQ3383$location == "M",]
+dfx_M_AQ3383 = df_M_AQ3383$list
+dfy_M_AQ3383 = df_M_AQ3383$sold
+model_M_AQ3383 = lm(dfy_M_AQ3383~dfx_M_AQ3383)
+summary(model_M_AQ3383)
+#neighborhood T 
+df_T_AQ3383 = df_AQ3383[df_AQ3383$location == "T",]
+dfx_T_AQ3383 = df_T_AQ3383$list
+dfy_T_AQ3383 = df_T_AQ3383$sold
+model_T_AQ3383 = lm(dfy_T_AQ3383~dfx_T_AQ3383)
+summary(model_T_AQ3383)
+```
+
+Table:
+
+Regression |      $R^2$     | estimated intercept $\beta_0$ | estimated slope $\beta_1$ | estimate of the variance of the error   | p-value for $H_0: \beta_1=0$ | 95% CI for $\beta_1$ 
+-----------|:-----------: |:-----------: |:-----------: |:-----------: |:-----------: |:-----------: |
+All |0.7979 | 0.3544 | 0.7795 | 0.1741 | p-value: < 2.2e-16 | (0.7244, 0.8346)
+Mississauga Neighborhood |0.9849 | 0.1390 | 0.8905 |0.0106 | p-value: < 2.2e-16 | (0.8668, 0.9141)
+Toronto Neighborhood  | 0.6816 | 0.5431 | 0.7040 | 0.2880 |p-value: < 2.2e-16 | (0.6127, 0.7954)
+
+Interpret and compare:
+We see the difference between $R^2$ is quite different. Mississauga neighborhood has a 0.98 $R^2$, which is the highest among all. However Toronto Neighborhood has a 0.68 $R^2$. As a result, $R^2$ based on all data is 0.80, which is in between other two sets of data. This shows us it is necessary to evaluate two neighborhoods respectively. This is normal because the distance between data and fitted regression line for all neighborhoods is usually not as well as how data fits the two neighborhoods respectively, since the list and sold price are often more similar in one neighborhoods. 
+
+A pooled two-sample t-test is not the best to be used when determine if there is a statistically significant difference between the slopes of the simple linear models for the two neighborhoods. Since we are dealing with housing price in two different cities, therefore it is reasonable to assume the two sets of data are independent. However, according to data shown above, they do not have the same variance. Therefore we should not use pooled two-sample t-test here.
+
+## III. Discussions and Limitations
+```{r echo=FALSE}
+par(mfrow=c(1,2))
+plot(fitted(model_M_AQ3383), resid(model_M_AQ3383), xlab="Fitted values", ylab="Residuals", main = "residual vs fitted AQ3383")
+abline(h=0, lty="dashed", lwd = 2)
+
+qqnorm(residuals(model_M_AQ3383))
+qqline(residuals(model_M_AQ3383), col = "purple", lwd = 2, lty = "dashed")
+```
+
+According to data summary shown above, I picked Mississauga neighborhood to do the following evaluation. This is because it has a $R^2$ of 0.9849, which means it has the highest portion of explained response variable variation by this model. 
+
+Violations: According to fitted vs residual graph, we can tell there are a few irregulars. The graph is mostly linear, which is good. There are also a few outliers in Normal Q-Q plot. However thee residuals follow a mostly straight line, which concluded there are not much violations, except for a few outliers. 
+
+Possible predictors to to fit a multiple linear regression for sale price could be size of the house, and how old this house is. These are factors directly related and can cause effect to the sale price 
